@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Household Financial Operating Plan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card-bg: #ffffff;
+      --border: #d2d2d7;
+      --accent: #1f4f7f;
+      --accent-soft: #e3edf7;
+      --text-main: #222222;
+      --text-muted: #555555;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 1.7rem;
+      color: var(--accent);
+    }
+
+    header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-full {
+      margin-top: 16px;
+    }
+
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 14px 16px 16px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      color: var(--accent);
+    }
+
+    .card h3 {
+      margin: 8px 0 6px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 0.92rem;
+    }
+
+    li + li {
+      margin-top: 2px;
+    }
+
+    .kpi {
+      font-weight: 600;
+      margin-top: 4px;
+      font-size: 0.94rem;
+    }
+
+    .kpi span {
+      color: var(--accent);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+    }
+
+    thead {
+      background: var(--accent-soft);
+    }
+
+    .note-list {
+      margin-top: 4px;
+      padding-left: 18px;
+      font-size: 0.9rem;
+    }
+
+    .note-list li + li {
+      margin-top: 4px;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+    }
+
+    .input-row label {
+      flex: 1;
+    }
+
+    .input-row input {
+      width: 110px;
+      padding: 3px 6px;
+      font-size: 0.9rem;
+      text-align: right;
+    }
+
+    .section-note {
+      margin-top: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Household Financial Operating Plan</h1>
+      <p>Interactive 24-Month Roadmap – All values editable</p>
+    </header>
+
+    <!-- TOP: Income + Free Cash -->
+    <div class="grid">
+      <div class="card">
+        <span class="pill">Income Engine</span>
+        <h2>Monthly Income</h2>
+        <div class="input-row">
+          <label for="monthlyIncome">Monthly planning base</label>
+          <input type="number" id="monthlyIncome" value="9500" />
+        </div>
+        <p class="section-note">
+          This is the total income per month that funds all household operating expenses and allocations.
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="pill">Liquidity</span>
+        <h2>Free Cash Flow (Calculated)</h2>
+        <p class="kpi">
+          Free Cash Flow per month:
+          <span id="freeCashDisplay">$0</span>
+        </p>
+        <ul>
+          <li>Calculated as income minus all household operating expenses (including reserves and investment).</li>
+          <li>Used for opportunities, shocks, or targeted extra debt paydown.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- HOE + External -->
+    <div class="grid grid-full">
+      <div class="card">
+        <span class="pill">Core Structure</span>
+        <h2>Household Operating Expenses<br />(funded by monthly income)</h2>
+
+        <div class="input-row">
+          <label for="mortgage">Mortgage</label>
+          <input type="number" id="mortgage" value="3500" />
+        </div>
+        <div class="input-row">
+          <label for="autoLoans">Auto Loans (total)</label>
+          <input type="number" id="autoLoans" value="1290" />
+        </div>
+        <div class="input-row">
+          <label for="insurance">Household Insurance</label>
+          <input type="number" id="insurance" value="1000" />
+        </div>
+        <div class="input-row">
+          <label for="utilities">Utilities</label>
+          <input type="number" id="utilities" value="400" />
+        </div>
+        <div class="input-row">
+          <label for="settlement">Settlement Program</label>
+          <input type="number" id="settlement" value="276" />
+        </div>
+        <div class="input-row">
+          <label for="chase">Chase Bank Repayment</label>
+          <input type="number" id="chase" value="150" />
+        </div>
+        <div class="input-row">
+          <label for="parentCC">Parent Credit Card Repayment</label>
+          <input type="number" id="parentCC" value="500" />
+        </div>
+        <div class="input-row">
+          <label for="groceries">Groceries</label>
+          <input type="number" id="groceries" value="650" />
+        </div>
+        <div class="input-row">
+          <label for="fuel">Fuel</label>
+          <input type="number" id="fuel" value="300" />
+        </div>
+        <div class="input-row">
+          <label for="parentReward">Parent Reward System</label>
+          <input type="number" id="parentReward" value="400" />
+        </div>
+        <div class="input-row">
+          <label for="emergencyReserve">Emergency Operating Reserve</label>
+          <input type="number" id="emergencyReserve" value="200" />
+        </div>
+        <div class="input-row">
+          <label for="investment">Investment Account Deposit</label>
+          <input type="number" id="investment" value="450" />
+        </div>
+
+        <p class="kpi">
+          Total Household Operating Expenses:
+          <span id="totalHOEDisplay">$0</span> per month
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="pill">Debt Acceleration</span>
+        <h2>External Principal Reduction</h2>
+        <div class="input-row">
+          <label for="kidsCC">Kids CC Contribution (external)</label>
+          <input type="number" id="kidsCC" value="200" />
+        </div>
+        <p class="section-note">
+          Kids’ contribution is not funded from monthly income. It goes directly to credit card principal.
+        </p>
+        <p class="kpi">
+          Total Credit Card principal reduction per month
+          (parents + kids):
+          <span id="ccTotalDisplay">$0</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Paycheck Routing (descriptive, based on current model) -->
+    <div class="grid grid-full">
+      <div class="card">
+        <span class="pill">Bi-Weekly Routing</span>
+        <h2>Paycheck 1 Routing (Reference)</h2>
+        <ul>
+          <li>Mortgage — $3,500</li>
+          <li>Groceries — $300</li>
+          <li>Fuel — $150</li>
+          <li>Parent Reward — $100</li>
+          <li>Parent CC Repayment — $250</li>
+          <li>Investment — $225</li>
+          <li>Emergency Reserve — $100</li>
+          <li>Free Cash — $125</li>
+        </ul>
+        <p class="section-note">
+          These are reference values based on the default plan. If you change the inputs above, use these as a guide and adjust manually.
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="pill">Bi-Weekly Routing</span>
+        <h2>Paycheck 2 Routing (Reference)</h2>
+        <ul>
+          <li>Auto Loans — $1,290</li>
+          <li>Household Insurance — $1,000</li>
+          <li>Settlement — $276</li>
+          <li>Chase — $150</li>
+          <li>Groceries — $350</li>
+          <li>Fuel — $150</li>
+          <li>Parent Reward — $100</li>
+          <li>Parent CC Repayment — $250</li>
+          <li>Investment — $225</li>
+          <li>Emergency Reserve — $100</li>
+          <li>Free Cash — $859</li>
+        </ul>
+        <p class="section-note">
+          Paycheck 2 clears the remaining fixed obligations and leaves the bulk of monthly free cash.
+        </p>
+      </div>
+    </div>
+
+    <!-- Quarterly Projections -->
+    <div class="card" style="margin-top:16px;">
+      <span class="pill">Projection – 24 Months</span>
+      <h2>Quarterly Projections (2-Year Plan)</h2>
+      <p class="section-note">
+        All values below update automatically when you change numbers in the inputs above.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Quarter</th>
+            <th>Free Cash (3 mo)</th>
+            <th>Investment (3 mo)</th>
+            <th>Parent Reward (3 mo)</th>
+            <th>CC Reduction (3 mo)</th>
+          </tr>
+        </thead>
+        <tbody id="quarterlyBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Cumulative Performance -->
+    <div class="card" style="margin-top:16px;">
+      <span class="pill">Cumulative View</span>
+      <h2>Cumulative Performance Over 2 Years</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Quarter</th>
+            <th>Cumulative Free Cash</th>
+            <th>Cumulative Investment</th>
+            <th>Cumulative Parent Reward</th>
+            <th>Cumulative CC Reduction</th>
+          </tr>
+        </thead>
+        <tbody id="cumulativeBody"></tbody>
+      </table>
+      <p class="kpi" style="margin-top:10px;">
+        Net position improvement after 24 months
+        (Free Cash + Investment Funding + Debt Eliminated):
+        <span id="netPositionDisplay">$0</span>
+      </p>
+    </div>
+
+    <!-- Executive Notes -->
+    <div class="card" style="margin-top:16px;">
+      <span class="pill">Governance Notes</span>
+      <h2>Executive Notes</h2>
+      <ul class="note-list">
+        <li>Household remains structurally solvent even under unemployment if income and expenses stay in this range.</li>
+        <li>Every critical obligation is funded before Free Cash Flow is counted.</li>
+        <li>Total credit card principal reduced each month is parents’ repayment plus kids’ contribution.</li>
+        <li>Parent Reward System is intentional: it maintains long-term discipline and cooperation.</li>
+        <li>When credit card debt is fully repaid, that monthly amount can be reallocated to reserves, investments, or other growth strategies.</li>
+      </ul>
+    </div>
+
+    <div class="footer-note">
+      Adjust any input above to immediately see the impact on monthly Free Cash Flow,
+      quarterly performance, and 24-month cumulative results.
+    </div>
+  </div>
+
+  <script>
+    function toNumber(id) {
+      const el = document.getElementById(id);
+      const v = parseFloat(el.value);
+      return isNaN(v) ? 0 : v;
+    }
+
+    function fmt(num) {
+      const n = isNaN(num) ? 0 : num;
+      return "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    function recalc() {
+      const income = toNumber("monthlyIncome");
+
+      const mortgage = toNumber("mortgage");
+      const autoLoans = toNumber("autoLoans");
+      const insurance = toNumber("insurance");
+      const utilities = toNumber("utilities");
+      const settlement = toNumber("settlement");
+      const chase = toNumber("chase");
+      const parentCC = toNumber("parentCC");
+      const groceries = toNumber("groceries");
+      const fuel = toNumber("fuel");
+      const parentReward = toNumber("parentReward");
+      const emergencyReserve = toNumber("emergencyReserve");
+      const investment = toNumber("investment");
+      const kidsCC = toNumber("kidsCC");
+
+      const totalHOE =
+        mortgage +
+        autoLoans +
+        insurance +
+        utilities +
+        settlement +
+        chase +
+        parentCC +
+        groceries +
+        fuel +
+        parentReward +
+        emergencyReserve +
+        investment;
+
+      const freeCash = income - totalHOE;
+      const ccTotal = parentCC + kidsCC;
+
+      document.getElementById("totalHOEDisplay").textContent = fmt(totalHOE);
+      document.getElementById("freeCashDisplay").textContent = fmt(freeCash);
+      document.getElementById("ccTotalDisplay").textContent = fmt(ccTotal);
+
+      // Quarterly + cumulative projections (8 quarters, 24 months)
+      const quarterlyBody = document.getElementById("quarterlyBody");
+      const cumulativeBody = document.getElementById("cumulativeBody");
+      quarterlyBody.innerHTML = "";
+      cumulativeBody.innerHTML = "";
+
+      const monthsPerQuarter = 3;
+      let cumFree = 0, cumInv = 0, cumReward = 0, cumCC = 0;
+
+      for (let q = 1; q <= 8; q++) {
+        const qFree = freeCash * monthsPerQuarter;
+        const qInv = investment * monthsPerQuarter;
+        const qReward = parentReward * monthsPerQuarter;
+        const qCC = ccTotal * monthsPerQuarter;
+
+        cumFree += qFree;
+        cumInv += qInv;
+        cumReward += qReward;
+        cumCC += qCC;
+
+        const trQ = document.createElement("tr");
+        trQ.innerHTML = `
+          <td>Q${q}</td>
+          <td>${fmt(qFree)}</td>
+          <td>${fmt(qInv)}</td>
+          <td>${fmt(qReward)}</td>
+          <td>${fmt(qCC)}</td>
+        `;
+        quarterlyBody.appendChild(trQ);
+
+        const trC = document.createElement("tr");
+        trC.innerHTML = `
+          <td>Q${q}</td>
+          <td>${fmt(cumFree)}</td>
+          <td>${fmt(cumInv)}</td>
+          <td>${fmt(cumReward)}</td>
+          <td>${fmt(cumCC)}</td>
+        `;
+        cumulativeBody.appendChild(trC);
+      }
+
+      const netPosition = cumFree + cumInv + cumCC;
+      document.getElementById("netPositionDisplay").textContent = fmt(netPosition);
+    }
+
+    // Hook up all inputs
+    window.addEventListener("DOMContentLoaded", () => {
+      const ids = [
+        "monthlyIncome",
+        "mortgage",
+        "autoLoans",
+        "insurance",
+        "utilities",
+        "settlement",
+        "chase",
+        "parentCC",
+        "groceries",
+        "fuel",
+        "parentReward",
+        "emergencyReserve",
+        "investment",
+        "kidsCC",
+      ];
+      ids.forEach(id => {
+        document.getElementById(id).addEventListener("input", recalc);
+      });
+      recalc();
+    });
+  </script>
+</body>
+</html>
