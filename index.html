@@ -242,24 +242,13 @@
       box-shadow: 0 10px 20px rgba(15, 91, 167, 0.35);
     }
 
-    .btn-refresh:active {
-      transform: translateY(1px);
-      box-shadow: 0 6px 14px rgba(15, 91, 167, 0.4);
-    }
-
     .btn-refresh span.icon {
       display: inline-block;
       font-size: 1.05rem;
     }
-
-    .notes ul {
-      margin: 6px 0 0;
-      padding-left: 18px;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-    }
   </style>
 </head>
+
 <body>
   <div class="page">
     <h1>Household Financial Operating Plan</h1>
@@ -522,9 +511,9 @@
       auto: 1290,
       insurance: 1000,
       utilities: 400,
-      settlement: 276,
+      settlement: 552, // default monthly settlement (276 each paycheck)
       chase: 150,
-      parentCC: 0, // default set to zero per request
+      parentCC: 0, // default set to zero
       groceries: 650,
       fuel: 300,
       parentReward: 400,
@@ -1006,6 +995,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
