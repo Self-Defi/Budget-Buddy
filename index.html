@@ -5,865 +5,853 @@
   <title>Household Financial Operating Plan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root {
-      --bg: #f5f5f7;
-      --card-bg: #ffffff;
-      --border: #d2d2d7;
-      --accent: #1f4f7f;
-      --accent-soft: #e3edf7;
-      --text-main: #222222;
-      --text-muted: #555555;
-      --overdue: #ffe5e5;
-      --due-soon: #fff4e0;
-      --paid: #e6f6e9;
-    }
-
     * {
       box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     }
 
     body {
       margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: var(--bg);
-      color: var(--text-main);
-      line-height: 1.5;
-      overflow-x: hidden;
+      padding: 16px;
+      background: #f5f6fa;
+      color: #222;
     }
 
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
+    h1 {
+      text-align: center;
+      margin-bottom: 4px;
     }
 
-    header {
+    h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
       text-align: center;
       margin-bottom: 24px;
-    }
-
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 1.7rem;
-      color: var(--accent);
-    }
-
-    header p {
-      margin: 0;
-      color: var(--text-muted);
-      font-size: 0.95rem;
+      color: #555;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 16px;
-    }
-
-    .grid-full {
-      margin-top: 16px;
-    }
-
-    @media (max-width: 800px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
+      max-width: 1200px;
+      margin: 0 auto 32px auto;
     }
 
     .card {
-      background: var(--card-bg);
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      padding: 14px 16px 16px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px 18px 18px 18px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      border: 1px solid #e0e4f0;
     }
 
     .card h2 {
-      margin: 0 0 8px;
-      font-size: 1.05rem;
-      color: var(--accent);
+      font-size: 18px;
     }
 
-    .pill {
+    .section-tag {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      background: #e8f1ff;
+      color: #194786;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #555;
+    }
+
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd2e3;
+      font-size: 14px;
+    }
+
+    input[type="number"]:focus,
+    input[type="date"]:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+    }
+
+    .value-highlight {
+      font-weight: 700;
+      color: #0f766e;
     }
 
     ul {
-      margin: 6px 0 0;
-      padding-left: 18px;
-      font-size: 0.92rem;
-    }
-
-    li + li {
-      margin-top: 2px;
-    }
-
-    .kpi {
-      font-weight: 600;
-      margin-top: 4px;
-      font-size: 0.94rem;
-    }
-
-    .kpi span {
-      color: var(--accent);
+      padding-left: 20px;
+      margin-top: 8px;
+      margin-bottom: 8px;
     }
 
     table {
+      width: 100%;
       border-collapse: collapse;
-      margin-top: 6px;
-      font-size: 0.9rem;
-      min-width: 100%;
+      font-size: 13px;
+      margin-top: 8px;
     }
 
     th,
     td {
+      border: 1px solid #e0e4f0;
       padding: 6px 8px;
-      border: 1px solid var(--border);
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    th:first-child,
-    td:first-child {
       text-align: left;
     }
 
-    thead {
-      background: var(--accent-soft);
-    }
-
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .note-list {
-      margin-top: 4px;
-      padding-left: 18px;
-      font-size: 0.9rem;
-    }
-
-    .note-list li + li {
-      margin-top: 4px;
+    th {
+      background: #eff3ff;
+      font-weight: 600;
     }
 
     .footer-note {
-      margin-top: 18px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-top: 6px;
     }
 
-    .input-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-      font-size: 0.9rem;
-    }
-
-    .input-row label {
-      flex: 1;
-    }
-
-    .input-row input[type="number"] {
-      width: 110px;
-      padding: 3px 6px;
-      font-size: 0.9rem;
-      text-align: right;
-    }
-
-    .section-note {
-      margin-top: 4px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .status-overdue td {
-      background: var(--overdue);
-    }
-
-    .status-duesoon td {
-      background: var(--due-soon);
-    }
-
-    .status-paid td {
-      background: var(--paid);
-    }
-
-    .center {
-      text-align: center;
-    }
-
-    /* Floating Refresh Plan button */
-    .reset-fab {
-      position: fixed;
-      bottom: 18px;
-      right: 18px;
-      z-index: 100;
-      background: var(--accent);
-      color: #ffffff;
-      border: none;
-      border-radius: 999px;
-      padding: 10px 18px;
-      display: flex;
+    .pill-button {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
+      border-radius: 999px;
+      border: none;
+      padding: 10px 18px;
+      font-size: 14px;
       font-weight: 600;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
       cursor: pointer;
-      gap: 6px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-      white-space: nowrap;
+      background: #1d4ed8;
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
     }
 
-    .reset-fab span.icon {
-      font-size: 1.1rem;
-    }
-
-    .reset-fab:hover {
-      background: #163d63;
-      transform: translateY(-1px);
-      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.3);
-    }
-
-    .reset-fab:active {
+    .pill-button:active {
       transform: translateY(1px);
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
     }
 
-    @media (max-width: 600px) {
-      .reset-fab {
-        bottom: 14px;
-        right: 14px;
-        font-size: 0.85rem;
-        padding: 8px 14px;
+    .refresh-container {
+      max-width: 1200px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .pill-button svg {
+      margin-right: 6px;
+    }
+
+    .status-paid {
+      background: #dcfce7;
+    }
+
+    .status-due-soon {
+      background: #fef9c3;
+    }
+
+    .status-overdue {
+      background: #fee2e2;
+    }
+
+    .status-none {
+      background: #f9fafb;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .grid {
+        gap: 12px;
+      }
+
+      .card {
+        padding: 14px 14px 16px 14px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header>
-      <h1>Household Financial Operating Plan</h1>
-      <p>Interactive 24-Month Roadmap – All values editable</p>
-    </header>
+  <h1>Household Financial Operating Plan</h1>
+  <p class="page-subtitle">Interactive 24-Month Roadmap — All values editable</p>
 
-    <!-- TOP: Income + Free Cash -->
-    <div class="grid">
-      <div class="card">
-        <span class="pill">Income Engine</span>
-        <h2>Monthly Income</h2>
-        <div class="input-row">
-          <label for="monthlyIncome">Monthly planning base</label>
-          <input type="number" id="monthlyIncome" value="9500" />
-        </div>
-        <p class="section-note">
-          This is the total income per month that funds all household operating expenses and allocations.
-        </p>
-      </div>
+  <!-- Refresh Plan -->
+  <div class="refresh-container">
+    <button class="pill-button" id="refreshPlanBtn">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+        <path d="M4 4v4h4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 16v-4h-4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4.5 11a5 5 0 0 0 8.5 3.5L16 12" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M15.5 9A5 5 0 0 0 7 5.5L4 8" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Refresh Plan
+    </button>
+  </div>
 
-      <div class="card">
-        <span class="pill">Liquidity</span>
-        <h2>Free Cash Flow (Calculated)</h2>
-        <p class="kpi">
-          Free Cash Flow per month:
-          <span id="freeCashDisplay">$0</span>
-        </p>
-        <ul>
-          <li>Calculated as income minus all household operating expenses (including reserves and investment).</li>
-          <li>Used for opportunities, shocks, or targeted extra debt paydown.</li>
-        </ul>
-      </div>
+  <!-- Top grid: Income / Free Cash / HOE / External contribution -->
+  <div class="grid">
+    <!-- Income Engine -->
+    <div class="card">
+      <div class="section-tag">Income Engine</div>
+      <h2>Monthly Income</h2>
+      <label for="monthlyIncome">Monthly planning base</label>
+      <input id="monthlyIncome" type="number" min="0" step="50" value="9500" />
+      <p class="footer-note">
+        This is the total income per month that funds all household operating expenses and allocations.
+      </p>
     </div>
 
-    <!-- HOE + External -->
-    <div class="grid grid-full">
-      <div class="card">
-        <span class="pill">Core Structure</span>
-        <h2>Household Operating Expenses<br />(funded by monthly income)</h2>
-
-        <div class="input-row">
-          <label for="mortgage">Mortgage</label>
-          <input type="number" id="mortgage" value="3500" />
-        </div>
-        <div class="input-row">
-          <label for="autoLoans">Auto Loans (total)</label>
-          <input type="number" id="autoLoans" value="1290" />
-        </div>
-        <div class="input-row">
-          <label for="insurance">Household Insurance</label>
-          <input type="number" id="insurance" value="1000" />
-        </div>
-        <div class="input-row">
-          <label for="utilities">Utilities</label>
-          <input type="number" id="utilities" value="400" />
-        </div>
-        <div class="input-row">
-          <label for="settlement">Settlement Program</label>
-          <input type="number" id="settlement" value="276" />
-        </div>
-        <div class="input-row">
-          <label for="chase">Chase Bank Repayment</label>
-          <input type="number" id="chase" value="150" />
-        </div>
-        <div class="input-row">
-          <label for="parentCC">Parent Credit Card Repayment</label>
-          <input type="number" id="parentCC" value="500" />
-        </div>
-        <div class="input-row">
-          <label for="groceries">Groceries</label>
-          <input type="number" id="groceries" value="650" />
-        </div>
-        <div class="input-row">
-          <label for="fuel">Fuel</label>
-          <input type="number" id="fuel" value="300" />
-        </div>
-        <div class="input-row">
-          <label for="parentReward">Parent Reward System</label>
-          <input type="number" id="parentReward" value="400" />
-        </div>
-        <div class="input-row">
-          <label for="emergencyReserve">Emergency Operating Reserve</label>
-          <input type="number" id="emergencyReserve" value="200" />
-        </div>
-        <div class="input-row">
-          <label for="investment">Investment Account Deposit</label>
-          <input type="number" id="investment" value="450" />
-        </div>
-
-        <p class="kpi">
-          Total Household Operating Expenses:
-          <span id="totalHOEDisplay">$0</span> per month
-        </p>
-      </div>
-
-      <div class="card">
-        <span class="pill">Debt Acceleration</span>
-        <h2>External Principal Reduction</h2>
-        <div class="input-row">
-          <label for="kidsCC">Kids CC Contribution (external)</label>
-          <input type="number" id="kidsCC" value="200" />
-        </div>
-        <p class="section-note">
-          Kids’ contribution is not funded from monthly income. It goes directly to credit card principal.
-        </p>
-        <p class="kpi">
-          Total Credit Card principal reduction per month
-          (parents + kids):
-          <span id="ccTotalDisplay">$0</span>
-        </p>
-      </div>
+    <!-- Free Cash -->
+    <div class="card">
+      <div class="section-tag">Liquidity</div>
+      <h2>Free Cash Flow (Calculated)</h2>
+      <p>Free Cash Flow per month:
+        <span class="value-highlight" id="freeCashDisplay">$384</span>
+      </p>
+      <ul>
+        <li>Calculated as income minus all household operating expenses (including reserves and investment).</li>
+        <li>Used for opportunities, shocks, or targeted extra debt paydown.</li>
+      </ul>
     </div>
 
-    <!-- Paycheck Routing (reference) -->
-    <div class="grid grid-full">
-      <div class="card">
-        <span class="pill">Bi-Weekly Routing</span>
-        <h2>Paycheck 1 Routing (Reference)</h2>
-        <ul>
-          <li>Mortgage — <span id="p1Mortgage"></span></li>
-          <li>Groceries — <span id="p1Groceries"></span></li>
-          <li>Fuel — <span id="p1Fuel"></span></li>
-          <li>Parent Reward — <span id="p1Reward"></span></li>
-          <li>Parent CC Repayment — <span id="p1ParentCC"></span></li>
-          <li>Investment — <span id="p1Investment"></span></li>
-          <li>Emergency Reserve — <span id="p1Reserve"></span></li>
-          <li>Free Cash — <span id="p1Free"></span></li>
-        </ul>
-        <p class="section-note">
-          Reference values based on the default plan. If you change the inputs above, use this as a guide and adjust manually.
-        </p>
-      </div>
+    <!-- HOE -->
+    <div class="card">
+      <div class="section-tag">Core Structure</div>
+      <h2>Household Operating Expenses<br />(funded by monthly income)</h2>
 
-      <div class="card">
-        <span class="pill">Bi-Weekly Routing</span>
-        <h2>Paycheck 2 Routing (Reference)</h2>
-        <ul>
-          <li>Auto Loans — <span id="p2Auto"></span></li>
-          <li>Household Insurance — <span id="p2Insurance"></span></li>
-          <li>Settlement — <span id="p2Settlement"></span></li>
-          <li>Chase — <span id="p2Chase"></span></li>
-          <li>Groceries — <span id="p2Groceries"></span></li>
-          <li>Fuel — <span id="p2Fuel"></span></li>
-          <li>Parent Reward — <span id="p2Reward"></span></li>
-          <li>Parent CC Repayment — <span id="p2ParentCC"></span></li>
-          <li>Investment — <span id="p2Investment"></span></li>
-          <li>Emergency Reserve — <span id="p2Reserve"></span></li>
-          <li>Free Cash — <span id="p2Free"></span></li>
-        </ul>
-        <p class="section-note">
-          Paycheck 2 clears the remaining fixed obligations and leaves the bulk of monthly free cash.
-        </p>
-      </div>
+      <label for="mortgage">Mortgage</label>
+      <input id="mortgage" type="number" min="0" step="50" value="3500" />
+
+      <label for="autoLoans">Auto Loans (total)</label>
+      <input id="autoLoans" type="number" min="0" step="50" value="1290" />
+
+      <label for="householdInsurance">Household Insurance</label>
+      <input id="householdInsurance" type="number" min="0" step="25" value="1000" />
+
+      <label for="utilities">Utilities</label>
+      <input id="utilities" type="number" min="0" step="25" value="400" />
+
+      <label for="settlementProgram">Settlement Program</label>
+      <input id="settlementProgram" type="number" min="0" step="10" value="276" />
+
+      <label for="chaseRepayment">Chase Bank Repayment</label>
+      <input id="chaseRepayment" type="number" min="0" step="10" value="150" />
+
+      <label for="parentCCRepayment">Parent Credit Card Repayment</label>
+      <input id="parentCCRepayment" type="number" min="0" step="25" value="500" />
+
+      <label for="groceries">Groceries</label>
+      <input id="groceries" type="number" min="0" step="25" value="650" />
+
+      <label for="fuel">Fuel</label>
+      <input id="fuel" type="number" min="0" step="25" value="300" />
+
+      <label for="parentReward">Parent Reward System</label>
+      <input id="parentReward" type="number" min="0" step="25" value="400" />
+
+      <label for="emergencyReserve">Emergency Operating Reserve</label>
+      <input id="emergencyReserve" type="number" min="0" step="25" value="200" />
+
+      <label for="investmentDeposit">Investment Account Deposit</label>
+      <input id="investmentDeposit" type="number" min="0" step="25" value="450" />
+
+      <p style="margin-top:8px;">
+        Total Household Operating Expenses:
+        <span class="value-highlight" id="totalHOEDisplay">$9,116 per month</span>
+      </p>
     </div>
 
-    <!-- Quarterly Projections -->
-    <div class="card" style="margin-top:16px;">
-      <span class="pill">Projection – 24 Months</span>
+    <!-- External principal reduction -->
+    <div class="card">
+      <div class="section-tag">Debt Acceleration</div>
+      <h2>External Principal Reduction</h2>
+
+      <label for="kidsContribution">Kids CC Contribution (external)</label>
+      <input id="kidsContribution" type="number" min="0" step="10" value="200" />
+
+      <p class="footer-note">
+        Kids’ contribution is not funded from monthly income. It goes directly to credit card principal.
+      </p>
+
+      <p style="margin-top:8px;">
+        Total Credit Card principal reduction per month<br />
+        (parents + kids):
+        <span class="value-highlight" id="totalCCReductionDisplay">$700</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Paycheck routing -->
+  <div class="grid">
+    <div class="card">
+      <div class="section-tag">Bi-Weekly Routing</div>
+      <h2>Paycheck 1 Routing (Reference)</h2>
+      <ul>
+        <li>Mortgage — <span id="p1-mortgage">$3,500</span></li>
+        <li>Groceries — <span id="p1-groceries">$300</span></li>
+        <li>Fuel — <span id="p1-fuel">$150</span></li>
+        <li>Parent Reward — <span id="p1-parentReward">$200</span></li>
+        <li>Parent CC Repayment — <span id="p1-parentCC">$250</span></li>
+        <li>Investment — <span id="p1-investment">$225</span></li>
+        <li>Emergency Reserve — <span id="p1-emergency">$100</span></li>
+        <li>Free Cash — <span id="p1-freeCash">$25</span></li>
+      </ul>
+      <p class="footer-note">
+        Reference values based on the default plan. If you change the inputs above, use this as a guide and adjust manually.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="section-tag">Bi-Weekly Routing</div>
+      <h2>Paycheck 2 Routing (Reference)</h2>
+      <ul>
+        <li>Auto Loans — <span id="p2-auto">$1,290</span></li>
+        <li>Household Insurance — <span id="p2-insurance">$1,000</span></li>
+        <li>Utilities — <span id="p2-utilities">$400</span></li>
+        <li>Settlement — <span id="p2-settlement">$276</span></li>
+        <li>Chase — <span id="p2-chase">$150</span></li>
+        <li>Groceries — <span id="p2-groceries">$350</span></li>
+        <li>Fuel — <span id="p2-fuel">$150</span></li>
+        <li>Parent Reward — <span id="p2-parentReward">$200</span></li>
+        <li>Parent CC Repayment — <span id="p2-parentCC">$250</span></li>
+        <li>Investment — <span id="p2-investment">$225</span></li>
+        <li>Emergency Reserve — <span id="p2-emergency">$100</span></li>
+        <li>Free Cash — <span id="p2-freeCash">$359</span></li>
+      </ul>
+      <p class="footer-note">
+        Paycheck 2 clears the remaining fixed obligations and leaves the bulk of monthly free cash.
+      </p>
+    </div>
+  </div>
+
+  <!-- Projections -->
+  <div class="grid">
+    <div class="card">
+      <div class="section-tag">Projection – 24 Months</div>
       <h2>Quarterly Projections (2-Year Plan)</h2>
-      <p class="section-note">
+      <p class="footer-note">
         All values below update automatically when you change numbers in the inputs above.
       </p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Quarter</th>
-              <th>Free Cash (3 mo)</th>
-              <th>Investment (3 mo)</th>
-              <th>Parent Reward (3 mo)</th>
-              <th>CC Reduction (3 mo)</th>
-            </tr>
-          </thead>
-          <tbody id="quarterlyBody"></tbody>
-        </table>
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Quarter</th>
+            <th>Free Cash (3 mo)</th>
+            <th>Investment (3 mo)</th>
+            <th>Parent Reward (3 mo)</th>
+            <th>CC Reduction (3 mo)</th>
+          </tr>
+        </thead>
+        <tbody id="quarterlyTableBody"></tbody>
+      </table>
     </div>
 
-    <!-- Cumulative Performance -->
-    <div class="card" style="margin-top:16px;">
-      <span class="pill">Cumulative View</span>
+    <div class="card">
+      <div class="section-tag">Cumulative View</div>
       <h2>Cumulative Performance Over 2 Years</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Quarter</th>
-              <th>Cumulative Free Cash</th>
-              <th>Cumulative Investment</th>
-              <th>Cumulative Parent Reward</th>
-              <th>Cumulative CC Reduction</th>
-            </tr>
-          </thead>
-          <tbody id="cumulativeBody"></tbody>
-        </table>
-      </div>
-      <p class="kpi" style="margin-top:10px;">
-        Net position improvement after 24 months
-        (Free Cash + Investment Funding + Debt Eliminated):
-        <span id="netPositionDisplay">$0</span>
+      <table>
+        <thead>
+          <tr>
+            <th>Quarter</th>
+            <th>Cumulative Free Cash</th>
+            <th>Cumulative Investment</th>
+            <th>Cumulative Parent Reward</th>
+            <th>Cumulative CC Reduction</th>
+          </tr>
+        </thead>
+        <tbody id="cumulativeTableBody"></tbody>
+      </table>
+      <p style="margin-top:8px;">
+        Net position improvement after 24 months (Free Cash + Investment Funding + Debt Eliminated):
+        <span class="value-highlight" id="netPositionDisplay">$36,816</span>
       </p>
     </div>
+  </div>
 
-    <!-- Bill Due Dates & Status -->
-    <div class="card" style="margin-top:16px;">
-      <span class="pill">Bill Tracking</span>
-      <h2>Bill Due Dates & Payment Status</h2>
-      <p class="section-note">
+  <!-- Bill Tracking + Notes -->
+  <div class="grid">
+    <div class="card">
+      <div class="section-tag">Bill Tracking</div>
+      <h2>Bill Due Dates &amp; Payment Status</h2>
+      <p class="footer-note">
         Due dates and “Paid this month” status are stored in your browser only and reset automatically each month.
       </p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Bill</th>
-              <th>Amount (current)</th>
-              <th>Due Date</th>
-              <th>Status</th>
-              <th class="center">Paid this month</th>
-            </tr>
-          </thead>
-          <tbody id="billTableBody"></tbody>
-        </table>
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Bill</th>
+            <th>Amount (current)</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Paid this month</th>
+          </tr>
+        </thead>
+        <tbody id="billTableBody">
+          <!-- rows injected by JS so they stay in sync with HOE amounts -->
+        </tbody>
+      </table>
     </div>
 
-    <!-- Executive Notes -->
-    <div class="card" style="margin-top:16px;">
-      <span class="pill">Governance Notes</span>
+    <div class="card">
+      <div class="section-tag">Governance Notes</div>
       <h2>Executive Notes</h2>
-      <ul class="note-list">
+      <ul>
         <li>Household remains structurally oriented toward solvency if income and expenses stay within planned ranges.</li>
         <li>Every critical obligation is funded before Free Cash Flow is counted.</li>
         <li>Total credit card principal reduced each month is parents’ repayment plus kids’ contribution.</li>
         <li>Parent Reward System is intentional: it maintains long-term discipline and cooperation.</li>
         <li>When credit card debt is fully repaid, that monthly amount can be reallocated to reserves, investments, or other growth strategies.</li>
       </ul>
-    </div>
-
-    <div class="footer-note">
-      Adjust any input above to immediately see the impact on monthly Free Cash Flow,
-      quarterly performance, 24-month cumulative results, and bill-status indicators.
+      <p class="footer-note">
+        Adjust any input above to immediately see the impact on monthly Free Cash Flow, quarterly performance, and 24-month cumulative results.
+      </p>
     </div>
   </div>
 
-  <!-- Floating Refresh Plan button -->
-  <button
-    id="resetPlan"
-    type="button"
-    class="reset-fab"
-    title="Refresh Plan"
-  >
-    <span class="icon">🔄</span>
-    <span>Refresh Plan</span>
-  </button>
-
   <script>
-    function toNumber(id) {
-      const el = document.getElementById(id);
-      const v = parseFloat(el.value);
-      return isNaN(v) ? 0 : v;
-    }
+    const PLAN_STORAGE_KEY = 'budgetBuddy-plan-v1';
+    const BILL_STORAGE_PREFIX = 'budgetBuddy-bills-';
 
-    function fmt(num) {
-      const n = isNaN(num) ? 0 : num;
-      return "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
-    }
-
-    // Baseline values for Refresh Plan
-    const defaultValues = {
-      monthlyIncome: 9500,
-      mortgage: 3500,
-      autoLoans: 1290,
-      insurance: 1000,
-      utilities: 400,
-      settlement: 276,
-      chase: 150,
-      parentCC: 500,
-      groceries: 650,
-      fuel: 300,
-      parentReward: 400,
-      emergencyReserve: 200,
-      investment: 450,
-      kidsCC: 200
-    };
-
-    const inputIds = Object.keys(defaultValues);
-
-    // Paycheck routing distribution (based on baseline plan)
-    const paycheckDistribution = {
-      p1: {
-        mortgage: 1,
-        groceries: 300 / 650,
-        fuel: 150 / 300,
-        parentReward: 100 / 400,
-        parentCC: 250 / 500,
-        investment: 225 / 450,
-        emergencyReserve: 100 / 200
-      },
-      p2: {
-        autoLoans: 1,
-        insurance: 1,
-        settlement: 1,
-        chase: 1,
-        groceries: 350 / 650,
-        fuel: 150 / 300,
-        parentReward: 100 / 400,
-        parentCC: 250 / 500,
-        investment: 225 / 450,
-        emergencyReserve: 100 / 200
-      }
-    };
-
-    const bills = [
-      { id: "mortgageBill", label: "Mortgage", amountId: "mortgage" },
-      { id: "autoBill", label: "Auto Loans", amountId: "autoLoans" },
-      { id: "insBill", label: "Household Insurance", amountId: "insurance" },
-      { id: "utilBill", label: "Utilities", amountId: "utilities" },
-      { id: "settlementBill", label: "Settlement Program", amountId: "settlement" },
-      { id: "chaseBill", label: "Chase Bank Repayment", amountId: "chase" },
-      { id: "parentCCBill", label: "Parent CC Repayment", amountId: "parentCC" }
-    ];
-
-    function getCurrentMonthKey() {
-      const today = new Date();
-      const y = today.getFullYear();
-      const m = String(today.getMonth() + 1).padStart(2, "0");
-      return `${y}-${m}`;
-    }
-
-    function statusForBill(dueDateStr, paidMonthKey) {
-      const today = new Date();
-      const currentKey = getCurrentMonthKey();
-
-      if (paidMonthKey === currentKey) {
-        return { text: "Paid this month", className: "status-paid" };
-      }
-
-      if (!dueDateStr) {
-        return { text: "No date set", className: "" };
-      }
-
-      const due = new Date(dueDateStr + "T00:00:00");
-      const diffMs = due - today;
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-      if (diffDays < 0) {
-        return { text: "Overdue", className: "status-overdue" };
-      } else if (diffDays === 0) {
-        return { text: "Due today", className: "status-duesoon" };
-      } else if (diffDays <= 5) {
-        return { text: `Due in ${diffDays} days`, className: "status-duesoon" };
-      } else {
-        return { text: `Due in ${diffDays} days`, className: "" };
-      }
-    }
-
-    function renderBills() {
-      const tbody = document.getElementById("billTableBody");
-      tbody.innerHTML = "";
-
-      const currentKey = getCurrentMonthKey();
-
-      bills.forEach(bill => {
-        const tr = document.createElement("tr");
-
-        const amount = toNumber(bill.amountId);
-
-        const dueStorageKey = "due_" + bill.id;
-        const paidStorageKey = "paid_" + bill.id;
-
-        const storedDue = localStorage.getItem(dueStorageKey) || "";
-        const storedPaidMonth = localStorage.getItem(paidStorageKey) || null;
-
-        const statusInfo = statusForBill(storedDue, storedPaidMonth);
-        if (statusInfo.className) {
-          tr.classList.add(statusInfo.className);
-        }
-
-        const tdName = document.createElement("td");
-        tdName.textContent = bill.label;
-
-        const tdAmount = document.createElement("td");
-        tdAmount.textContent = fmt(amount);
-
-        const tdDate = document.createElement("td");
-        const dateInput = document.createElement("input");
-        dateInput.type = "date";
-        dateInput.value = storedDue;
-        dateInput.addEventListener("change", () => {
-          localStorage.setItem(dueStorageKey, dateInput.value);
-          renderBills();
-        });
-        tdDate.appendChild(dateInput);
-
-        const tdStatus = document.createElement("td");
-        tdStatus.textContent = statusInfo.text;
-
-        const tdPaid = document.createElement("td");
-        tdPaid.className = "center";
-        const paidCheckbox = document.createElement("input");
-        paidCheckbox.type = "checkbox";
-        paidCheckbox.checked = storedPaidMonth === currentKey;
-        paidCheckbox.addEventListener("change", () => {
-          if (paidCheckbox.checked) {
-            localStorage.setItem(paidStorageKey, currentKey);
-          } else {
-            localStorage.removeItem(paidStorageKey);
-          }
-          renderBills();
-        });
-        tdPaid.appendChild(paidCheckbox);
-
-        tr.appendChild(tdName);
-        tr.appendChild(tdAmount);
-        tr.appendChild(tdDate);
-        tr.appendChild(tdStatus);
-        tr.appendChild(tdPaid);
-
-        tbody.appendChild(tr);
+    function formatCurrency(value) {
+      const n = Number(value) || 0;
+      return n.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
       });
     }
 
-    function recalc() {
-      const income = toNumber("monthlyIncome");
+    function getNumeric(id) {
+      const el = document.getElementById(id);
+      return el ? Number(el.value || 0) : 0;
+    }
 
-      const mortgage = toNumber("mortgage");
-      const autoLoans = toNumber("autoLoans");
-      const insurance = toNumber("insurance");
-      const utilities = toNumber("utilities");
-      const settlement = toNumber("settlement");
-      const chase = toNumber("chase");
-      const parentCC = toNumber("parentCC");
-      const groceries = toNumber("groceries");
-      const fuel = toNumber("fuel");
-      const parentReward = toNumber("parentReward");
-      const emergencyReserve = toNumber("emergencyReserve");
-      const investment = toNumber("investment");
-      const kidsCC = toNumber("kidsCC");
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = typeof value === 'string' ? value : formatCurrency(value);
+    }
+
+    function quarterKey() {
+      const d = new Date();
+      const ym = d.getFullYear().toString() + String(d.getMonth() + 1).padStart(2, '0');
+      return BILL_STORAGE_PREFIX + ym;
+    }
+
+    function updateCalculations() {
+      const monthlyIncome = getNumeric('monthlyIncome');
+
+      const mortgage = getNumeric('mortgage');
+      const auto = getNumeric('autoLoans');
+      const insurance = getNumeric('householdInsurance');
+      const utilities = getNumeric('utilities');
+      const settlement = getNumeric('settlementProgram');
+      const chase = getNumeric('chaseRepayment');
+      const parentCC = getNumeric('parentCCRepayment');
+      const groceries = getNumeric('groceries');
+      const fuel = getNumeric('fuel');
+      const parentReward = getNumeric('parentReward');
+      const emergency = getNumeric('emergencyReserve');
+      const investment = getNumeric('investmentDeposit');
+
+      const kidsContribution = getNumeric('kidsContribution');
 
       const totalHOE =
-        mortgage +
-        autoLoans +
-        insurance +
-        utilities +
-        settlement +
-        chase +
-        parentCC +
-        groceries +
-        fuel +
-        parentReward +
-        emergencyReserve +
-        investment;
+        mortgage + auto + insurance + utilities + settlement + chase +
+        parentCC + groceries + fuel + parentReward + emergency + investment;
 
-      const freeCash = income - totalHOE;
-      const ccTotal = parentCC + kidsCC;
+      const freeCash = monthlyIncome - totalHOE;
 
-      document.getElementById("totalHOEDisplay").textContent = fmt(totalHOE);
-      document.getElementById("freeCashDisplay").textContent = fmt(freeCash);
-      document.getElementById("ccTotalDisplay").textContent = fmt(ccTotal);
+      setText('totalHOEDisplay', `${formatCurrency(totalHOE)} per month`);
+      setText('freeCashDisplay', formatCurrency(freeCash));
 
-      // --- Dynamic Paycheck routing ---
-      const paycheckBase = income / 2;
+      const totalCCReduction = parentCC + kidsContribution;
+      setText('totalCCReductionDisplay', totalCCReduction);
 
-      const p1Mortgage = mortgage * paycheckDistribution.p1.mortgage;
-      const p1Groceries = groceries * paycheckDistribution.p1.groceries;
-      const p1Fuel = fuel * paycheckDistribution.p1.fuel;
-      const p1Reward = parentReward * paycheckDistribution.p1.parentReward;
-      const p1ParentCC = parentCC * paycheckDistribution.p1.parentCC;
-      const p1Investment = investment * paycheckDistribution.p1.investment;
-      const p1Reserve = emergencyReserve * paycheckDistribution.p1.emergencyReserve;
+      // === Routing logic ===
+      const paycheckIncome = monthlyIncome / 2;
 
-      const p1SumNoFree =
+      // Split items between Paycheck 1 and Paycheck 2.
+      // Mortgage: 100% Paycheck 1
+      const p1Mortgage = mortgage;
+
+      // Auto + Insurance + Utilities + Settlement + Chase: Paycheck 2
+      const p2Auto = auto;
+      const p2Insurance = insurance;
+      const p2Utilities = utilities;
+      const p2Settlement = settlement;
+      const p2Chase = chase;
+
+      // Parent CC: 50/50 split, rounding on Paycheck 1
+      const p1ParentCC = Math.round(parentCC / 2);
+      const p2ParentCC = parentCC - p1ParentCC;
+
+      // Groceries: preserve original feel (approx 300 / 350 split for 650)
+      const groceriesRatioP1 = 300 / 650; // base ratio, applied to any groceries number
+      const p1Groceries = Math.round(groceries * groceriesRatioP1);
+      const p2Groceries = groceries - p1Groceries;
+
+      // Fuel: simple 50/50 split
+      const p1Fuel = Math.round(fuel / 2);
+      const p2Fuel = fuel - p1Fuel;
+
+      // Parent Reward, Emergency, Investment: 50/50 split
+      const p1ParentReward = Math.round(parentReward / 2);
+      const p2ParentReward = parentReward - p1ParentReward;
+
+      const p1Emergency = Math.round(emergency / 2);
+      const p2Emergency = emergency - p1Emergency;
+
+      const p1Investment = Math.round(investment / 2);
+      const p2Investment = investment - p1Investment;
+
+      // Totals per paycheck
+      const p1HOE =
         p1Mortgage +
         p1Groceries +
         p1Fuel +
-        p1Reward +
+        p1ParentReward +
         p1ParentCC +
         p1Investment +
-        p1Reserve;
+        p1Emergency;
 
-      const p1Free = paycheckBase - p1SumNoFree;
-
-      const p2Auto = autoLoans * paycheckDistribution.p2.autoLoans;
-      const p2Insurance = insurance * paycheckDistribution.p2.insurance;
-      const p2Settlement = settlement * paycheckDistribution.p2.settlement;
-      const p2Chase = chase * paycheckDistribution.p2.chase;
-      const p2Groceries = groceries * paycheckDistribution.p2.groceries;
-      const p2Fuel = fuel * paycheckDistribution.p2.fuel;
-      const p2Reward = parentReward * paycheckDistribution.p2.parentReward;
-      const p2ParentCC = parentCC * paycheckDistribution.p2.parentCC;
-      const p2Investment = investment * paycheckDistribution.p2.investment;
-      const p2Reserve = emergencyReserve * paycheckDistribution.p2.emergencyReserve;
-
-      const p2SumNoFree =
+      const p2HOE =
         p2Auto +
         p2Insurance +
+        p2Utilities +
         p2Settlement +
         p2Chase +
         p2Groceries +
         p2Fuel +
-        p2Reward +
+        p2ParentReward +
         p2ParentCC +
         p2Investment +
-        p2Reserve;
+        p2Emergency;
 
-      const p2Free = paycheckBase - p2SumNoFree;
+      const p1Free = paycheckIncome - p1HOE;
+      const p2Free = paycheckIncome - p2HOE;
 
-      // Update DOM for routing
-      document.getElementById("p1Mortgage").textContent = fmt(p1Mortgage);
-      document.getElementById("p1Groceries").textContent = fmt(p1Groceries);
-      document.getElementById("p1Fuel").textContent = fmt(p1Fuel);
-      document.getElementById("p1Reward").textContent = fmt(p1Reward);
-      document.getElementById("p1ParentCC").textContent = fmt(p1ParentCC);
-      document.getElementById("p1Investment").textContent = fmt(p1Investment);
-      document.getElementById("p1Reserve").textContent = fmt(p1Reserve);
-      document.getElementById("p1Free").textContent = fmt(p1Free);
+      // Sanity: p1HOE + p2HOE should equal totalHOE; the design guarantees this.
+      // Update routing display
+      setText('p1-mortgage', p1Mortgage);
+      setText('p1-groceries', p1Groceries);
+      setText('p1-fuel', p1Fuel);
+      setText('p1-parentReward', p1ParentReward);
+      setText('p1-parentCC', p1ParentCC);
+      setText('p1-investment', p1Investment);
+      setText('p1-emergency', p1Emergency);
+      setText('p1-freeCash', p1Free);
 
-      document.getElementById("p2Auto").textContent = fmt(p2Auto);
-      document.getElementById("p2Insurance").textContent = fmt(p2Insurance);
-      document.getElementById("p2Settlement").textContent = fmt(p2Settlement);
-      document.getElementById("p2Chase").textContent = fmt(p2Chase);
-      document.getElementById("p2Groceries").textContent = fmt(p2Groceries);
-      document.getElementById("p2Fuel").textContent = fmt(p2Fuel);
-      document.getElementById("p2Reward").textContent = fmt(p2Reward);
-      document.getElementById("p2ParentCC").textContent = fmt(p2ParentCC);
-      document.getElementById("p2Investment").textContent = fmt(p2Investment);
-      document.getElementById("p2Reserve").textContent = fmt(p2Reserve);
-      document.getElementById("p2Free").textContent = fmt(p2Free);
-      // --- end routing ---
+      setText('p2-auto', p2Auto);
+      setText('p2-insurance', p2Insurance);
+      setText('p2-utilities', p2Utilities);
+      setText('p2-settlement', p2Settlement);
+      setText('p2-chase', p2Chase);
+      setText('p2-groceries', p2Groceries);
+      setText('p2-fuel', p2Fuel);
+      setText('p2-parentReward', p2ParentReward);
+      setText('p2-parentCC', p2ParentCC);
+      setText('p2-investment', p2Investment);
+      setText('p2-emergency', p2Emergency);
+      setText('p2-freeCash', p2Free);
 
-      // Quarterly & cumulative projections
-      const quarterlyBody = document.getElementById("quarterlyBody");
-      const cumulativeBody = document.getElementById("cumulativeBody");
-      quarterlyBody.innerHTML = "";
-      cumulativeBody.innerHTML = "";
+      // === Quarterly projections ===
+      const qFree = freeCash * 3;
+      const qInvest = investment * 3;
+      const qParentReward = parentReward * 3;
+      const qCCReduction = totalCCReduction * 3;
 
-      const monthsPerQuarter = 3;
-      let cumFree = 0, cumInv = 0, cumReward = 0, cumCC = 0;
+      const quarterlyBody = document.getElementById('quarterlyTableBody');
+      const cumulativeBody = document.getElementById('cumulativeTableBody');
+      if (!quarterlyBody || !cumulativeBody) return;
 
-      for (let q = 1; q <= 8; q++) {
-        const qFree = freeCash * monthsPerQuarter;
-        const qInv = investment * monthsPerQuarter;
-        const qReward = parentReward * monthsPerQuarter;
-        const qCC = ccTotal * monthsPerQuarter;
+      quarterlyBody.innerHTML = '';
+      cumulativeBody.innerHTML = '';
+
+      let cumFree = 0;
+      let cumInvest = 0;
+      let cumReward = 0;
+      let cumCC = 0;
+
+      for (let i = 1; i <= 8; i++) {
+        const qLabel = 'Q' + i;
 
         cumFree += qFree;
-        cumInv += qInv;
-        cumReward += qReward;
-        cumCC += qCC;
+        cumInvest += qInvest;
+        cumReward += qParentReward;
+        cumCC += qCCReduction;
 
-        const trQ = document.createElement("tr");
-        trQ.innerHTML = `
-          <td>Q${q}</td>
-          <td>${fmt(qFree)}</td>
-          <td>${fmt(qInv)}</td>
-          <td>${fmt(qReward)}</td>
-          <td>${fmt(qCC)}</td>
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${qLabel}</td>
+          <td>${formatCurrency(qFree)}</td>
+          <td>${formatCurrency(qInvest)}</td>
+          <td>${formatCurrency(qParentReward)}</td>
+          <td>${formatCurrency(qCCReduction)}</td>
         `;
-        quarterlyBody.appendChild(trQ);
+        quarterlyBody.appendChild(row);
 
-        const trC = document.createElement("tr");
-        trC.innerHTML = `
-          <td>Q${q}</td>
-          <td>${fmt(cumFree)}</td>
-          <td>${fmt(cumInv)}</td>
-          <td>${fmt(cumReward)}</td>
-          <td>${fmt(cumCC)}</td>
+        const crow = document.createElement('tr');
+        crow.innerHTML = `
+          <td>${qLabel}</td>
+          <td>${formatCurrency(cumFree)}</td>
+          <td>${formatCurrency(cumInvest)}</td>
+          <td>${formatCurrency(cumReward)}</td>
+          <td>${formatCurrency(cumCC)}</td>
         `;
-        cumulativeBody.appendChild(trC);
+        cumulativeBody.appendChild(crow);
       }
 
-      const netPosition = cumFree + cumInv + cumCC;
-      document.getElementById("netPositionDisplay").textContent = fmt(netPosition);
+      const netPosition = cumFree + cumInvest + cumCC;
+      setText('netPositionDisplay', netPosition);
 
-      renderBills();
+      updateBillAmounts({
+        mortgage,
+        auto,
+        insurance,
+        utilities,
+        settlement,
+        chase,
+        parentCC,
+        groceries,
+        fuel,
+        parentReward,
+        emergency,
+        investment
+      });
+
+      savePlanToStorage();
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      // Restore saved numeric values if present and hook autosave
-      inputIds.forEach(id => {
-        const el = document.getElementById(id);
-        const stored = localStorage.getItem("bb_input_" + id);
-        if (stored !== null) {
-          el.value = stored;
+    // === Bill tracking ===
+    const BILL_CONFIG = [
+      { id: 'bill-mortgage', label: 'Mortgage', amountId: 'mortgage' },
+      { id: 'bill-auto', label: 'Auto Loans (total)', amountId: 'autoLoans' },
+      { id: 'bill-insurance', label: 'Household Insurance', amountId: 'householdInsurance' },
+      { id: 'bill-utilities', label: 'Utilities', amountId: 'utilities' },
+      { id: 'bill-settlement', label: 'Settlement Program', amountId: 'settlementProgram' },
+      { id: 'bill-chase', label: 'Chase Bank Repayment', amountId: 'chaseRepayment' },
+      { id: 'bill-parentCC', label: 'Parent Credit Card Repayment', amountId: 'parentCCRepayment' },
+      { id: 'bill-groceries', label: 'Groceries', amountId: 'groceries' },
+      { id: 'bill-fuel', label: 'Fuel', amountId: 'fuel' },
+      { id: 'bill-parentReward', label: 'Parent Reward System', amountId: 'parentReward' },
+      { id: 'bill-emergency', label: 'Emergency Operating Reserve', amountId: 'emergencyReserve' },
+      { id: 'bill-investment', label: 'Investment Account Deposit', amountId: 'investmentDeposit' }
+    ];
+
+    function buildBillTable() {
+      const tbody = document.getElementById('billTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const stored = loadBillState();
+
+      BILL_CONFIG.forEach(cfg => {
+        const tr = document.createElement('tr');
+        const amount = getNumeric(cfg.amountId);
+
+        const saved = stored[cfg.id] || {};
+        const dueDateValue = saved.dueDate || '';
+        const paid = !!saved.paid;
+
+        tr.innerHTML = `
+          <td>${cfg.label}</td>
+          <td><span class="bill-amount" data-amount-id="${cfg.amountId}">${formatCurrency(amount)}</span></td>
+          <td><input type="date" class="bill-due" data-bill-id="${cfg.id}" value="${dueDateValue}"></td>
+          <td><span class="bill-status" data-bill-id="${cfg.id}"></span></td>
+          <td style="text-align:center;"><input type="checkbox" class="bill-paid" data-bill-id="${cfg.id}" ${paid ? 'checked' : ''}></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      attachBillHandlers();
+      refreshBillStatuses();
+    }
+
+    function updateBillAmounts(values) {
+      BILL_CONFIG.forEach(cfg => {
+        const span = document.querySelector(`span.bill-amount[data-amount-id="${cfg.amountId}"]`);
+        if (span) {
+          const v = values[cfg.amountId.replace('Program', '').replace('Repayment', '')] || getNumeric(cfg.amountId);
+          span.textContent = formatCurrency(getNumeric(cfg.amountId));
         }
-        el.addEventListener("input", () => {
-          localStorage.setItem("bb_input_" + id, el.value);
-          recalc();
+      });
+      refreshBillStatuses();
+    }
+
+    function attachBillHandlers() {
+      const dueInputs = document.querySelectorAll('.bill-due');
+      const paidChecks = document.querySelectorAll('.bill-paid');
+
+      dueInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          saveBillState();
+          refreshBillStatuses();
         });
       });
 
-      // Refresh Plan button (reset to baseline on this device)
-      const resetBtn = document.getElementById("resetPlan");
-      resetBtn.addEventListener("click", () => {
-        if (!confirm("Refresh the plan back to the Self-Defi baseline values?")) return;
+      paidChecks.forEach(chk => {
+        chk.addEventListener('change', () => {
+          saveBillState();
+          refreshBillStatuses();
+        });
+      });
+    }
 
-        inputIds.forEach(id => {
+    function loadBillState() {
+      const key = quarterKey();
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return {};
+        return JSON.parse(raw) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveBillState() {
+      const key = quarterKey();
+      const state = {};
+      const dueInputs = document.querySelectorAll('.bill-due');
+      const paidChecks = document.querySelectorAll('.bill-paid');
+
+      dueInputs.forEach(input => {
+        const id = input.getAttribute('data-bill-id');
+        if (!state[id]) state[id] = {};
+        state[id].dueDate = input.value || '';
+      });
+
+      paidChecks.forEach(chk => {
+        const id = chk.getAttribute('data-bill-id');
+        if (!state[id]) state[id] = {};
+        state[id].paid = chk.checked;
+      });
+
+      localStorage.setItem(key, JSON.stringify(state));
+    }
+
+    function refreshBillStatuses() {
+      const today = new Date();
+      const todayISO = today.toISOString().slice(0, 10);
+      const statusSpans = document.querySelectorAll('.bill-status');
+
+      statusSpans.forEach(span => {
+        const billId = span.getAttribute('data-bill-id');
+        const row = span.closest('tr');
+        if (!row) return;
+
+        const dueInput = row.querySelector('.bill-due');
+        const paidChk = row.querySelector('.bill-paid');
+
+        const dueDate = dueInput ? dueInput.value : '';
+        const paid = paidChk ? paidChk.checked : false;
+
+        row.classList.remove('status-paid', 'status-due-soon', 'status-overdue', 'status-none');
+
+        if (!dueDate) {
+          span.textContent = 'No date set';
+          row.classList.add('status-none');
+        } else if (paid) {
+          span.textContent = 'Paid this month';
+          row.classList.add('status-paid');
+        } else {
+          const diffDays = (new Date(dueDate) - new Date(todayISO)) / (1000 * 60 * 60 * 24);
+          if (diffDays < 0) {
+            span.textContent = 'Overdue';
+            row.classList.add('status-overdue');
+          } else if (diffDays <= 7) {
+            span.textContent = `Due in ${Math.round(diffDays)} day(s)`;
+            row.classList.add('status-due-soon');
+          } else {
+            span.textContent = 'Scheduled';
+            row.classList.add('status-none');
+          }
+        }
+      });
+    }
+
+    // === Plan storage ===
+    function savePlanToStorage() {
+      const ids = [
+        'monthlyIncome',
+        'mortgage',
+        'autoLoans',
+        'householdInsurance',
+        'utilities',
+        'settlementProgram',
+        'chaseRepayment',
+        'parentCCRepayment',
+        'groceries',
+        'fuel',
+        'parentReward',
+        'emergencyReserve',
+        'investmentDeposit',
+        'kidsContribution'
+      ];
+      const data = {};
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+      try {
+        localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify(data));
+      } catch {
+        // ignore storage errors
+      }
+    }
+
+    function loadPlanFromStorage() {
+      try {
+        const raw = localStorage.getItem(PLAN_STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        Object.keys(data).forEach(id => {
           const el = document.getElementById(id);
-          el.value = defaultValues[id];
-          localStorage.removeItem("bb_input_" + id);
+          if (el) el.value = data[id];
         });
+      } catch {
+        // ignore
+      }
+    }
 
-        recalc();
-        alert("Plan refreshed.");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+    function resetPlan() {
+      localStorage.removeItem(PLAN_STORAGE_KEY);
+      // Clear this month’s bill tracking
+      localStorage.removeItem(quarterKey());
+      // Reload page to restore defaults
+      location.reload();
+    }
+
+    // === Init ===
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPlanFromStorage();
+      buildBillTable();
+      updateCalculations();
+
+      const inputs = document.querySelectorAll('input[type="number"]');
+      inputs.forEach(input => {
+        input.addEventListener('input', updateCalculations);
       });
 
-      recalc();
+      document.getElementById('refreshPlanBtn').addEventListener('click', resetPlan);
     });
   </script>
 </body>
