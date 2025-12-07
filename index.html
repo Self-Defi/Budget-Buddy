@@ -216,15 +216,21 @@
       color: #ffffff;
       border: none;
       border-radius: 999px;
-      width: 52px;
-      height: 52px;
+      padding: 10px 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
       cursor: pointer;
+      gap: 6px;
       transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .reset-fab span.icon {
+      font-size: 1.1rem;
     }
 
     .reset-fab:hover {
@@ -240,11 +246,10 @@
 
     @media (max-width: 600px) {
       .reset-fab {
-        width: 46px;
-        height: 46px;
-        font-size: 1.2rem;
         bottom: 14px;
         right: 14px;
+        font-size: 0.85rem;
+        padding: 8px 14px;
       }
     }
   </style>
@@ -496,8 +501,14 @@
   </div>
 
   <!-- Floating Refresh Plan button -->
-  <button id="resetPlan" type="button" class="reset-fab" title="Refresh Plan">
-    🔄
+  <button
+    id="resetPlan"
+    type="button"
+    class="reset-fab"
+    title="Refresh Plan"
+  >
+    <span class="icon">🔄</span>
+    <span>Refresh Plan</span>
   </button>
 
   <script>
