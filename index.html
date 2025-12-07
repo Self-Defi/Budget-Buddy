@@ -13,6 +13,9 @@
       --accent-soft: #e3edf7;
       --text-main: #222222;
       --text-muted: #555555;
+      --overdue: #ffe5e5;
+      --due-soon: #fff4e0;
+      --paid: #e6f6e9;
     }
 
     * { box-sizing: border-box; }
@@ -78,12 +81,6 @@
       margin: 0 0 8px;
       font-size: 1.05rem;
       color: var(--accent);
-    }
-
-    .card h3 {
-      margin: 8px 0 6px;
-      font-size: 0.95rem;
-      color: var(--text-main);
     }
 
     .pill {
@@ -171,17 +168,39 @@
       flex: 1;
     }
 
-    .input-row input {
+    .input-row input[type="number"] {
       width: 110px;
       padding: 3px 6px;
       font-size: 0.9rem;
       text-align: right;
     }
 
+    .input-row input[type="date"] {
+      width: 150px;
+      padding: 3px 6px;
+      font-size: 0.9rem;
+    }
+
     .section-note {
       margin-top: 4px;
       font-size: 0.8rem;
       color: var(--text-muted);
+    }
+
+    .status-overdue td {
+      background: var(--overdue);
+    }
+
+    .status-duesoon td {
+      background: var(--due-soon);
+    }
+
+    .status-paid td {
+      background: var(--paid);
+    }
+
+    .center {
+      text-align: center;
     }
   </style>
 </head>
@@ -299,7 +318,7 @@
       </div>
     </div>
 
-    <!-- Paycheck Routing (descriptive, based on current model) -->
+    <!-- Paycheck Routing (reference) -->
     <div class="grid grid-full">
       <div class="card">
         <span class="pill">Bi-Weekly Routing</span>
@@ -315,7 +334,7 @@
           <li>Free Cash — $125</li>
         </ul>
         <p class="section-note">
-          These are reference values based on the default plan. If you change the inputs above, use these as a guide and adjust manually.
+          Reference values based on the default plan. If you change the inputs above, use this as a guide and adjust manually.
         </p>
       </div>
 
@@ -385,12 +404,33 @@
       </p>
     </div>
 
+    <!-- NEW: Bill Due Dates & Status -->
+    <div class="card" style="margin-top:16px;">
+      <span class="pill">Bill Tracking</span>
+      <h2>Bill Due Dates & Payment Status</h2>
+      <p class="section-note">
+        Due dates and “Paid this month” status are stored in your browser only and reset automatically each month.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Bill</th>
+            <th>Amount (current)</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th class="center">Paid this month</th>
+          </tr>
+        </thead>
+        <tbody id="billTableBody"></tbody>
+      </table>
+    </div>
+
     <!-- Executive Notes -->
     <div class="card" style="margin-top:16px;">
       <span class="pill">Governance Notes</span>
       <h2>Executive Notes</h2>
       <ul class="note-list">
-        <li>Household remains structurally solvent even under unemployment if income and expenses stay in this range.</li>
+        <li>Household remains structurally oriented toward solvency if income and expenses stay within planned ranges.</li>
         <li>Every critical obligation is funded before Free Cash Flow is counted.</li>
         <li>Total credit card principal reduced each month is parents’ repayment plus kids’ contribution.</li>
         <li>Parent Reward System is intentional: it maintains long-term discipline and cooperation.</li>
@@ -400,7 +440,7 @@
 
     <div class="footer-note">
       Adjust any input above to immediately see the impact on monthly Free Cash Flow,
-      quarterly performance, and 24-month cumulative results.
+      quarterly performance, 24-month cumulative results, and bill-status indicators.
     </div>
   </div>
 
@@ -414,6 +454,119 @@
     function fmt(num) {
       const n = isNaN(num) ? 0 : num;
       return "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    const bills = [
+      { id: "mortgageBill", label: "Mortgage", amountId: "mortgage" },
+      { id: "autoBill", label: "Auto Loans", amountId: "autoLoans" },
+      { id: "insBill", label: "Household Insurance", amountId: "insurance" },
+      { id: "utilBill", label: "Utilities", amountId: "utilities" },
+      { id: "settlementBill", label: "Settlement Program", amountId: "settlement" },
+      { id: "chaseBill", label: "Chase Bank Repayment", amountId: "chase" },
+      { id: "parentCCBill", label: "Parent CC Repayment", amountId: "parentCC" }
+    ];
+
+    function getCurrentMonthKey() {
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = String(today.getMonth() + 1).padStart(2, "0");
+      return `${y}-${m}`;
+    }
+
+    function statusForBill(dueDateStr, paidMonthKey) {
+      const today = new Date();
+      const currentKey = getCurrentMonthKey();
+
+      if (paidMonthKey === currentKey) {
+        return { text: "Paid this month", className: "status-paid" };
+      }
+
+      if (!dueDateStr) {
+        return { text: "No date set", className: "" };
+      }
+
+      const due = new Date(dueDateStr + "T00:00:00");
+      const diffMs = due - today;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) {
+        return { text: "Overdue", className: "status-overdue" };
+      } else if (diffDays === 0) {
+        return { text: "Due today", className: "status-duesoon" };
+      } else if (diffDays <= 5) {
+        return { text: `Due in ${diffDays} days`, className: "status-duesoon" };
+      } else {
+        return { text: `Due in ${diffDays} days`, className: "" };
+      }
+    }
+
+    function renderBills() {
+      const tbody = document.getElementById("billTableBody");
+      tbody.innerHTML = "";
+
+      const currentKey = getCurrentMonthKey();
+
+      bills.forEach(bill => {
+        const tr = document.createElement("tr");
+
+        // get amount from corresponding input
+        const amount = toNumber(bill.amountId);
+
+        // load stored values
+        const dueStorageKey = "due_" + bill.id;
+        const paidStorageKey = "paid_" + bill.id;
+
+        const storedDue = localStorage.getItem(dueStorageKey) || "";
+        const storedPaidMonth = localStorage.getItem(paidStorageKey) || null;
+
+        const statusInfo = statusForBill(storedDue, storedPaidMonth);
+        if (statusInfo.className) {
+          tr.classList.add(statusInfo.className);
+        }
+
+        // columns
+        const tdName = document.createElement("td");
+        tdName.textContent = bill.label;
+
+        const tdAmount = document.createElement("td");
+        tdAmount.textContent = fmt(amount);
+
+        const tdDate = document.createElement("td");
+        const dateInput = document.createElement("input");
+        dateInput.type = "date";
+        dateInput.value = storedDue;
+        dateInput.addEventListener("change", () => {
+          localStorage.setItem(dueStorageKey, dateInput.value);
+          renderBills();
+        });
+        tdDate.appendChild(dateInput);
+
+        const tdStatus = document.createElement("td");
+        tdStatus.textContent = statusInfo.text;
+
+        const tdPaid = document.createElement("td");
+        tdPaid.className = "center";
+        const paidCheckbox = document.createElement("input");
+        paidCheckbox.type = "checkbox";
+        paidCheckbox.checked = storedPaidMonth === currentKey;
+        paidCheckbox.addEventListener("change", () => {
+          if (paidCheckbox.checked) {
+            localStorage.setItem(paidStorageKey, currentKey);
+          } else {
+            localStorage.removeItem(paidStorageKey);
+          }
+          renderBills();
+        });
+        tdPaid.appendChild(paidCheckbox);
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdAmount);
+        tr.appendChild(tdDate);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdPaid);
+
+        tbody.appendChild(tr);
+      });
     }
 
     function recalc() {
@@ -497,9 +650,11 @@
 
       const netPosition = cumFree + cumInv + cumCC;
       document.getElementById("netPositionDisplay").textContent = fmt(netPosition);
+
+      // Update bill tracker with new amounts
+      renderBills();
     }
 
-    // Hook up all inputs
     window.addEventListener("DOMContentLoaded", () => {
       const ids = [
         "monthlyIncome",
@@ -520,8 +675,10 @@
       ids.forEach(id => {
         document.getElementById(id).addEventListener("input", recalc);
       });
+
       recalc();
     });
   </script>
 </body>
 </html>
+
