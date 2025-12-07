@@ -28,6 +28,7 @@
       background: var(--bg);
       color: var(--text-main);
       line-height: 1.5;
+      overflow-x: hidden; /* prevent whole-page sideways scroll */
     }
 
     .page {
@@ -115,10 +116,10 @@
     }
 
     table {
-      width: 100%;
       border-collapse: collapse;
       margin-top: 6px;
       font-size: 0.9rem;
+      min-width: 100%;
     }
 
     th,
@@ -136,6 +137,12 @@
 
     thead {
       background: var(--accent-soft);
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .note-list {
@@ -173,12 +180,6 @@
       padding: 3px 6px;
       font-size: 0.9rem;
       text-align: right;
-    }
-
-    .input-row input[type="date"] {
-      width: 150px;
-      padding: 3px 6px;
-      font-size: 0.9rem;
     }
 
     .section-note {
@@ -367,36 +368,40 @@
       <p class="section-note">
         All values below update automatically when you change numbers in the inputs above.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Quarter</th>
-            <th>Free Cash (3 mo)</th>
-            <th>Investment (3 mo)</th>
-            <th>Parent Reward (3 mo)</th>
-            <th>CC Reduction (3 mo)</th>
-          </tr>
-        </thead>
-        <tbody id="quarterlyBody"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Quarter</th>
+              <th>Free Cash (3 mo)</th>
+              <th>Investment (3 mo)</th>
+              <th>Parent Reward (3 mo)</th>
+              <th>CC Reduction (3 mo)</th>
+            </tr>
+          </thead>
+          <tbody id="quarterlyBody"></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Cumulative Performance -->
     <div class="card" style="margin-top:16px;">
       <span class="pill">Cumulative View</span>
       <h2>Cumulative Performance Over 2 Years</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Quarter</th>
-            <th>Cumulative Free Cash</th>
-            <th>Cumulative Investment</th>
-            <th>Cumulative Parent Reward</th>
-            <th>Cumulative CC Reduction</th>
-          </tr>
-        </thead>
-        <tbody id="cumulativeBody"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Quarter</th>
+              <th>Cumulative Free Cash</th>
+              <th>Cumulative Investment</th>
+              <th>Cumulative Parent Reward</th>
+              <th>Cumulative CC Reduction</th>
+            </tr>
+          </thead>
+          <tbody id="cumulativeBody"></tbody>
+        </table>
+      </div>
       <p class="kpi" style="margin-top:10px;">
         Net position improvement after 24 months
         (Free Cash + Investment Funding + Debt Eliminated):
@@ -404,25 +409,27 @@
       </p>
     </div>
 
-    <!-- NEW: Bill Due Dates & Status -->
+    <!-- Bill Due Dates & Status -->
     <div class="card" style="margin-top:16px;">
       <span class="pill">Bill Tracking</span>
       <h2>Bill Due Dates & Payment Status</h2>
       <p class="section-note">
         Due dates and “Paid this month” status are stored in your browser only and reset automatically each month.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Bill</th>
-            <th>Amount (current)</th>
-            <th>Due Date</th>
-            <th>Status</th>
-            <th class="center">Paid this month</th>
-          </tr>
-        </thead>
-        <tbody id="billTableBody"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Bill</th>
+              <th>Amount (current)</th>
+              <th>Due Date</th>
+              <th>Status</th>
+              <th class="center">Paid this month</th>
+            </tr>
+          </thead>
+          <tbody id="billTableBody"></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Executive Notes -->
@@ -509,10 +516,8 @@
       bills.forEach(bill => {
         const tr = document.createElement("tr");
 
-        // get amount from corresponding input
         const amount = toNumber(bill.amountId);
 
-        // load stored values
         const dueStorageKey = "due_" + bill.id;
         const paidStorageKey = "paid_" + bill.id;
 
@@ -524,7 +529,6 @@
           tr.classList.add(statusInfo.className);
         }
 
-        // columns
         const tdName = document.createElement("td");
         tdName.textContent = bill.label;
 
@@ -607,7 +611,6 @@
       document.getElementById("freeCashDisplay").textContent = fmt(freeCash);
       document.getElementById("ccTotalDisplay").textContent = fmt(ccTotal);
 
-      // Quarterly + cumulative projections (8 quarters, 24 months)
       const quarterlyBody = document.getElementById("quarterlyBody");
       const cumulativeBody = document.getElementById("cumulativeBody");
       quarterlyBody.innerHTML = "";
@@ -651,7 +654,6 @@
       const netPosition = cumFree + cumInv + cumCC;
       document.getElementById("netPositionDisplay").textContent = fmt(netPosition);
 
-      // Update bill tracker with new amounts
       renderBills();
     }
 
@@ -681,4 +683,5 @@
   </script>
 </body>
 </html>
+
 
