@@ -374,14 +374,14 @@
         <span class="pill">Bi-Weekly Routing</span>
         <h2>Paycheck 1 Routing (Reference)</h2>
         <ul>
-          <li>Mortgage — $3,500</li>
-          <li>Groceries — $300</li>
-          <li>Fuel — $150</li>
-          <li>Parent Reward — $100</li>
-          <li>Parent CC Repayment — $250</li>
-          <li>Investment — $225</li>
-          <li>Emergency Reserve — $100</li>
-          <li>Free Cash — $125</li>
+          <li>Mortgage — <span id="p1Mortgage"></span></li>
+          <li>Groceries — <span id="p1Groceries"></span></li>
+          <li>Fuel — <span id="p1Fuel"></span></li>
+          <li>Parent Reward — <span id="p1Reward"></span></li>
+          <li>Parent CC Repayment — <span id="p1ParentCC"></span></li>
+          <li>Investment — <span id="p1Investment"></span></li>
+          <li>Emergency Reserve — <span id="p1Reserve"></span></li>
+          <li>Free Cash — <span id="p1Free"></span></li>
         </ul>
         <p class="section-note">
           Reference values based on the default plan. If you change the inputs above, use this as a guide and adjust manually.
@@ -392,17 +392,17 @@
         <span class="pill">Bi-Weekly Routing</span>
         <h2>Paycheck 2 Routing (Reference)</h2>
         <ul>
-          <li>Auto Loans — $1,290</li>
-          <li>Household Insurance — $1,000</li>
-          <li>Settlement — $276</li>
-          <li>Chase — $150</li>
-          <li>Groceries — $350</li>
-          <li>Fuel — $150</li>
-          <li>Parent Reward — $100</li>
-          <li>Parent CC Repayment — $250</li>
-          <li>Investment — $225</li>
-          <li>Emergency Reserve — $100</li>
-          <li>Free Cash — $859</li>
+          <li>Auto Loans — <span id="p2Auto"></span></li>
+          <li>Household Insurance — <span id="p2Insurance"></span></li>
+          <li>Settlement — <span id="p2Settlement"></span></li>
+          <li>Chase — <span id="p2Chase"></span></li>
+          <li>Groceries — <span id="p2Groceries"></span></li>
+          <li>Fuel — <span id="p2Fuel"></span></li>
+          <li>Parent Reward — <span id="p2Reward"></span></li>
+          <li>Parent CC Repayment — <span id="p2ParentCC"></span></li>
+          <li>Investment — <span id="p2Investment"></span></li>
+          <li>Emergency Reserve — <span id="p2Reserve"></span></li>
+          <li>Free Cash — <span id="p2Free"></span></li>
         </ul>
         <p class="section-note">
           Paycheck 2 clears the remaining fixed obligations and leaves the bulk of monthly free cash.
@@ -542,6 +542,31 @@
     };
 
     const inputIds = Object.keys(defaultValues);
+
+    // Paycheck routing distribution (based on baseline plan)
+    const paycheckDistribution = {
+      p1: {
+        mortgage: 1,
+        groceries: 300 / 650,
+        fuel: 150 / 300,
+        parentReward: 100 / 400,
+        parentCC: 250 / 500,
+        investment: 225 / 450,
+        emergencyReserve: 100 / 200
+      },
+      p2: {
+        autoLoans: 1,
+        insurance: 1,
+        settlement: 1,
+        chase: 1,
+        groceries: 350 / 650,
+        fuel: 150 / 300,
+        parentReward: 100 / 400,
+        parentCC: 250 / 500,
+        investment: 225 / 450,
+        emergencyReserve: 100 / 200
+      }
+    };
 
     const bills = [
       { id: "mortgageBill", label: "Mortgage", amountId: "mortgage" },
@@ -691,6 +716,77 @@
       document.getElementById("freeCashDisplay").textContent = fmt(freeCash);
       document.getElementById("ccTotalDisplay").textContent = fmt(ccTotal);
 
+      // --- Dynamic Paycheck routing ---
+      const paycheckBase = income / 2;
+
+      const p1Mortgage = mortgage * paycheckDistribution.p1.mortgage;
+      const p1Groceries = groceries * paycheckDistribution.p1.groceries;
+      const p1Fuel = fuel * paycheckDistribution.p1.fuel;
+      const p1Reward = parentReward * paycheckDistribution.p1.parentReward;
+      const p1ParentCC = parentCC * paycheckDistribution.p1.parentCC;
+      const p1Investment = investment * paycheckDistribution.p1.investment;
+      const p1Reserve = emergencyReserve * paycheckDistribution.p1.emergencyReserve;
+
+      const p1SumNoFree =
+        p1Mortgage +
+        p1Groceries +
+        p1Fuel +
+        p1Reward +
+        p1ParentCC +
+        p1Investment +
+        p1Reserve;
+
+      const p1Free = paycheckBase - p1SumNoFree;
+
+      const p2Auto = autoLoans * paycheckDistribution.p2.autoLoans;
+      const p2Insurance = insurance * paycheckDistribution.p2.insurance;
+      const p2Settlement = settlement * paycheckDistribution.p2.settlement;
+      const p2Chase = chase * paycheckDistribution.p2.chase;
+      const p2Groceries = groceries * paycheckDistribution.p2.groceries;
+      const p2Fuel = fuel * paycheckDistribution.p2.fuel;
+      const p2Reward = parentReward * paycheckDistribution.p2.parentReward;
+      const p2ParentCC = parentCC * paycheckDistribution.p2.parentCC;
+      const p2Investment = investment * paycheckDistribution.p2.investment;
+      const p2Reserve = emergencyReserve * paycheckDistribution.p2.emergencyReserve;
+
+      const p2SumNoFree =
+        p2Auto +
+        p2Insurance +
+        p2Settlement +
+        p2Chase +
+        p2Groceries +
+        p2Fuel +
+        p2Reward +
+        p2ParentCC +
+        p2Investment +
+        p2Reserve;
+
+      const p2Free = paycheckBase - p2SumNoFree;
+
+      // Update DOM for routing
+      document.getElementById("p1Mortgage").textContent = fmt(p1Mortgage);
+      document.getElementById("p1Groceries").textContent = fmt(p1Groceries);
+      document.getElementById("p1Fuel").textContent = fmt(p1Fuel);
+      document.getElementById("p1Reward").textContent = fmt(p1Reward);
+      document.getElementById("p1ParentCC").textContent = fmt(p1ParentCC);
+      document.getElementById("p1Investment").textContent = fmt(p1Investment);
+      document.getElementById("p1Reserve").textContent = fmt(p1Reserve);
+      document.getElementById("p1Free").textContent = fmt(p1Free);
+
+      document.getElementById("p2Auto").textContent = fmt(p2Auto);
+      document.getElementById("p2Insurance").textContent = fmt(p2Insurance);
+      document.getElementById("p2Settlement").textContent = fmt(p2Settlement);
+      document.getElementById("p2Chase").textContent = fmt(p2Chase);
+      document.getElementById("p2Groceries").textContent = fmt(p2Groceries);
+      document.getElementById("p2Fuel").textContent = fmt(p2Fuel);
+      document.getElementById("p2Reward").textContent = fmt(p2Reward);
+      document.getElementById("p2ParentCC").textContent = fmt(p2ParentCC);
+      document.getElementById("p2Investment").textContent = fmt(p2Investment);
+      document.getElementById("p2Reserve").textContent = fmt(p2Reserve);
+      document.getElementById("p2Free").textContent = fmt(p2Free);
+      // --- end routing ---
+
+      // Quarterly & cumulative projections
       const quarterlyBody = document.getElementById("quarterlyBody");
       const cumulativeBody = document.getElementById("cumulativeBody");
       quarterlyBody.innerHTML = "";
@@ -772,5 +868,6 @@
   </script>
 </body>
 </html>
+
 
 
